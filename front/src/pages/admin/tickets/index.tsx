@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import EventManger from "../../../utils/eventManager";
 
 const TicketsAdmin = () => {
-  const [rowId, setRowId] = useState<number | undefined>();
+  const [row, setRow] = useState<number | undefined>();
 
   const confirmTicket = async (id: number) => {
     const response = await axios.put(`/ticket/${id}/update-status`);
@@ -17,7 +17,7 @@ const TicketsAdmin = () => {
       toast.success(response.data.message);
       EventManger.raiseRefreshTable("ticket");
     }
-    setRowId(undefined);
+    setRow(undefined);
   };
 
   const handleDelete = async (id: number) => {
@@ -27,18 +27,17 @@ const TicketsAdmin = () => {
       toast.success(response.data.message);
       EventManger.raiseRefreshTable("ticket");
     }
-    setRowId(undefined);
+    setRow(undefined);
   };
   return (
     <Table
       controller={"ticket"}
-      actionRow={rowId}
-      onRowSelect={setRowId}
+      onRowSelect={setRow}
       actions={
         <>
           <MenuItem
             sx={{ color: "success.main" }}
-            onClick={() => confirmTicket(rowId)}
+            onClick={() => confirmTicket(row)}
           >
             <CheckIcon fontSize="small" />
             Confirm
@@ -46,7 +45,7 @@ const TicketsAdmin = () => {
           <MenuItem
             sx={{ color: "error.main" }}
             onClick={() => {
-              handleDelete(rowId);
+              handleDelete(row);
             }}
           >
             <DeleteIcon fontSize="small" />

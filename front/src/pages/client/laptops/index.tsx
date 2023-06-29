@@ -7,47 +7,79 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import EventManger from "../../../utils/eventManager";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 
 const LaptopsClient = () => {
   const { control, handleSubmit, reset } = useForm();
 
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [rowId, setRowId] = useState<number | undefined>();
+  const [row, setRow] = useState<number | undefined>();
+  const [mode, setMode] = useState<"new" | "edit" | undefined>();
 
   const onSubmit = async (data: any) => {
-    const response = await axios.post("/laptop", { ...data });
+    const response = await axios[mode == "new" ? "post" : "put"](
+      mode == "new" ? "/laptop" : `laptop/${row}`,
+      {
+        ...data,
+      }
+    );
 
     if (response?.data.result) {
       toast.success(response.data.message);
-      setDrawerOpen(false);
+      setMode(undefined);
       reset();
       EventManger.raiseRefreshTable("laptop");
     }
+
+    setRow(undefined);
   };
 
   const handleDelete = async (id: number) => {
     const response = await axios.delete(`/laptop/${id}`);
-
     if (response?.data.result) {
       toast.success(response.data.message);
       EventManger.raiseRefreshTable("laptop");
     }
-    setRowId(undefined);
+    setRow(undefined);
+  };
+
+  const fetchModel = async (id: number) => {
+    const response = await axios.get(`/laptop/${id}`);
+    if (response?.data) {
+      reset(response.data);
+      setMode("edit");
+    }
+  };
+
+  const handleAdd = () => {
+    reset({
+      type: "",
+      model: "",
+      producedAt: "",
+    });
+    setMode("new");
   };
 
   return (
     <>
       <Table
         controller={"laptop"}
-        onAdd={() => setDrawerOpen(true)}
-        actionRow={rowId}
-        onRowSelect={setRowId}
+        onAdd={handleAdd}
+        onRowSelect={setRow}
         actions={
           <>
             <MenuItem
+              sx={{ color: "secondary.main" }}
+              onClick={() => {
+                fetchModel(row);
+              }}
+            >
+              <EditIcon fontSize="small" />
+              Edit
+            </MenuItem>
+            <MenuItem
               sx={{ color: "error.main" }}
               onClick={() => {
-                handleDelete(rowId);
+                handleDelete(row);
               }}
             >
               <DeleteIcon fontSize="small" />
@@ -58,8 +90,8 @@ const LaptopsClient = () => {
       />
       <Drawer
         title="Add laptop"
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
+        open={mode !== undefined}
+        onClose={() => setMode(undefined)}
         actions={
           <>
             <Button
@@ -72,7 +104,7 @@ const LaptopsClient = () => {
             <Button
               variant="contained"
               color="error"
-              onClick={() => setDrawerOpen(false)}
+              onClick={() => setMode(undefined)}
             >
               Cancel
             </Button>

@@ -80,7 +80,7 @@ public class LaptopPartService implements ILaptopPartService {
     @Override
     public PaginationResponse<LaptopPartDto> getAllWithPagination(PaginationRequest paginationRequest) {
         List<Column> columns=getColumns();
-        SearchSpecification<LaptopPart> specification = new SearchSpecification<>(paginationRequest.getFilters(),paginationRequest.getSearch(),columns);
+        SearchSpecification<LaptopPart> specification = new SearchSpecification<>(paginationRequest.getFilters(),paginationRequest.getSearch(),columns,paginationRequest.getOrder());
         Pageable pageable = PageRequest.of(Objects.requireNonNullElse(paginationRequest.getPageNumber(), 0), Objects.requireNonNullElse(paginationRequest.getPageSize(), 10));
         Page<LaptopPart> laptopParts=laptopPartRepository.findAll(specification, pageable);
 

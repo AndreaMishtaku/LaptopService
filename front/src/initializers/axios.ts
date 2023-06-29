@@ -50,7 +50,6 @@ const axiosInit = async () => {
       clearSession();
     }
 
-    console.log(error, "Error");
     if (error.response) {
       if (error.response.data?.message) {
         handleResponseMessage(

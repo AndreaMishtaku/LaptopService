@@ -27,7 +27,7 @@ public class LaptopPartController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('Admin')")
+    //@PreAuthorize("hasRole('Admin')")
     public ResponseEntity<ActionSuccessful> updateLaptopPart(@PathVariable(name="id") Long id,@RequestBody LaptopPartDto laptopPartDto){
         return ResponseEntity.ok(laptopPartService.update(id,laptopPartDto));
     }

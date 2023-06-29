@@ -5,7 +5,6 @@ import {
   Table as MuiTable,
   Popover,
   TableRow,
-  MenuItem,
   TableBody,
   TableCell,
   Container,
@@ -16,23 +15,16 @@ import {
   Alert,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-
 import THead from "./table-head";
 import TableToolbar from "./table-toolbar";
 import axios from "axios";
-import { IFilter } from "../../assets/interfaces";
+import { IFilter, IOrder } from "../../assets/interfaces";
 import { eDataType } from "../../assets/enums";
 import TableSkeleton from "./skeleton";
-
-interface IOrder {
-  field: string;
-  order: "asc" | "desc";
-}
 
 interface ITable {
   controller: String;
   onAdd?: () => void;
-  actionRow?: number;
   onRowSelect?: (id: number | undefined) => void;
   actions?: any;
 }
@@ -51,7 +43,7 @@ const formatDate = (value: string) => {
 };
 
 const Table = (props: ITable) => {
-  const { controller, onAdd, actions, actionRow, onRowSelect } = props;
+  const { controller, onAdd, actions, onRowSelect } = props;
   const [open, setOpen] = useState(null);
 
   const [rows, setRows] = useState<Array<any>>();
@@ -61,12 +53,14 @@ const Table = (props: ITable) => {
   const [search, setSearch] = useState("");
   const [rowCount, setRowCount] = useState();
   const [filters, setFilters] = useState<Array<IFilter>>([]);
+  const [order, setOrder] = useState<IOrder>();
 
   const fetchData = useCallback(async () => {
     const response = await axios.post(`${controller}/get-all`, {
       pageNumber: page,
       pageSize: pageSize,
       filters: filters,
+      order: order ? order : null,
       search: search,
     });
     if (response?.data) {
@@ -74,7 +68,7 @@ const Table = (props: ITable) => {
       setColumns(response.data.columns);
       setRowCount(response.data.rowCount);
     }
-  }, [page, pageSize, filters, search]);
+  }, [page, pageSize, filters, search, order]);
 
   useEffect(() => {
     fetchData();
@@ -122,12 +116,17 @@ const Table = (props: ITable) => {
               <Box overflow={"auto"}>
                 <TableContainer sx={{ minWidth: 800 }}>
                   <MuiTable>
-                    <THead columns={columns} actionColumn={Boolean(actions)} />
+                    <THead
+                      columns={columns}
+                      actionColumn={Boolean(actions)}
+                      order={order}
+                      applyOrder={setOrder}
+                    />
                     {rows && rows.length > 0 ? (
                       <TableBody>
                         {rows.map((row: any, index: number) => {
                           return (
-                            <TableRow hover key={row.id} tabIndex={-1}>
+                            <TableRow hover key={`row${row.id}`} tabIndex={-1}>
                               {columns.map((c: any) => {
                                 if (c.hidden === false) {
                                   return (
@@ -211,14 +210,14 @@ const Table = (props: ITable) => {
 
       {actions && (
         <Popover
-          open={Boolean(open) && Boolean(actionRow)}
+          open={Boolean(open)}
           anchorEl={open}
           onClose={() => {
             handleCloseMenu();
-            onRowSelect(undefined);
           }}
           anchorOrigin={{ vertical: "top", horizontal: "left" }}
           transformOrigin={{ vertical: "top", horizontal: "right" }}
+          onClick={() => setOpen(null)}
           PaperProps={{
             sx: {
               p: 1,

@@ -110,7 +110,7 @@ public class TicketService implements ITicketService {
         }
 
         List<Column> columns=getColumns();
-        SearchSpecification<Ticket> specification = new SearchSpecification<>(paginationRequest.getFilters(),paginationRequest.getSearch(),columns,internalFilters);
+        SearchSpecification<Ticket> specification = new SearchSpecification<>(paginationRequest.getFilters(),paginationRequest.getSearch(),columns,paginationRequest.getOrder(),internalFilters);
         Pageable pageable = PageRequest.of(Objects.requireNonNullElse(paginationRequest.getPageNumber(), 0), Objects.requireNonNullElse(paginationRequest.getPageSize(), 10));
         Page<Ticket> tickets=ticketRepository.findAll(specification, pageable);
 

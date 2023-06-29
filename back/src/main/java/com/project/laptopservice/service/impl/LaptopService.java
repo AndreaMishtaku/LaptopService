@@ -101,7 +101,7 @@ public class LaptopService implements ILaptopService {
 
 
         List<Column> columns=getColumns();
-        SearchSpecification<Laptop> specification = new SearchSpecification<>(paginationRequest.getFilters(),paginationRequest.getSearch(),columns,internalFilters);
+        SearchSpecification<Laptop> specification = new SearchSpecification<>(paginationRequest.getFilters(),paginationRequest.getSearch(),columns,paginationRequest.getOrder(),internalFilters);
         Pageable pageable = PageRequest.of(Objects.requireNonNullElse(paginationRequest.getPageNumber(), 0), Objects.requireNonNullElse(paginationRequest.getPageSize(), 10));
         Page<Laptop> laptops=laptopRepository.findAll(specification, pageable);
 

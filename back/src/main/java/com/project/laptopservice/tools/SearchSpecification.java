@@ -1,13 +1,12 @@
 package com.project.laptopservice.tools;
 
-import com.project.laptopservice.payload.pagination.Column;
-import com.project.laptopservice.payload.pagination.DataType;
-import com.project.laptopservice.payload.pagination.Filter;
-import com.project.laptopservice.payload.pagination.Operation;
+import com.project.laptopservice.payload.pagination.*;
+import com.project.laptopservice.payload.pagination.Order;
 import jakarta.persistence.criteria.*;
 import org.springframework.data.jpa.domain.Specification;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,17 +18,21 @@ public class SearchSpecification<T> implements Specification<T> {
 
     private List<Filter> internalFilters;
 
-    public SearchSpecification(List<Filter> filters, String search,List<Column> columns,List<Filter> internalFilters) {
+    private Order order;
+
+    public SearchSpecification(List<Filter> filters, String search,List<Column> columns,Order order,List<Filter> internalFilters) {
         this.filters = filters;
         this.search = search;
         this.columns=columns;
         this.internalFilters=internalFilters;
+        this.order=order;
     }
 
-    public SearchSpecification(List<Filter> filters, String search,List<Column> columns) {
+    public SearchSpecification(List<Filter> filters, String search,List<Column> columns,Order order) {
         this.filters = filters;
         this.search = search;
         this.columns=columns;
+        this.order=order;
         this.internalFilters=new ArrayList<>();
     }
 
@@ -55,6 +58,15 @@ public class SearchSpecification<T> implements Specification<T> {
             predicates.add(buildPredicate(builder, keyPath, operation, value));
         }
 
+        if(this.order!=null){
+            Path<?> keyPath = resolveKeyPath(root, this.order.getKey());
+            if(order.getType().equals(OrderType.asc)){
+                query.orderBy(builder.asc(keyPath));
+            }else{
+                query.orderBy(builder.desc(keyPath));
+            }
+
+        }
 
         if (search != null && !search.isEmpty()) {
             List<Predicate> orConditions = new ArrayList<>();
@@ -101,7 +113,7 @@ public class SearchSpecification<T> implements Specification<T> {
                     }catch (Exception e){
                         throw new IllegalArgumentException("Condition is not correct");
                     }
-                }else if(keyPath.getJavaType().equals(Integer.class)||keyPath.getJavaType().equals(Double.class)||keyPath.getJavaType().equals(Long.class)){
+                }else if(Number.class.isAssignableFrom(keyPath.getJavaType())){
                     try{
                         Number number=(Number) value;
                         return  builder.equal(keyPath,number);
@@ -139,7 +151,7 @@ public class SearchSpecification<T> implements Specification<T> {
                     }catch (Exception e){
                         throw new IllegalArgumentException("Condition is not correct");
                     }
-                }else if(keyPath.getJavaType().equals(Integer.class)||keyPath.getJavaType().equals(Double.class)||keyPath.getJavaType().equals(Long.class)){
+                }else if(Number.class.isAssignableFrom(keyPath.getJavaType())){
                     try{
                         Number number=(Number) value;
                         Expression<Number> numberPath = keyPath.as(Number.class);
@@ -161,7 +173,7 @@ public class SearchSpecification<T> implements Specification<T> {
                     }catch (Exception e){
                         throw new IllegalArgumentException("Condition is not correct");
                     }
-                }else if(keyPath.getJavaType().equals(Integer.class)||keyPath.getJavaType().equals(Double.class)||keyPath.getJavaType().equals(Long.class)){
+                }else if(Number.class.isAssignableFrom(keyPath.getJavaType())){
                     try{
                         Number number=(Number) value;
                         Expression<Number> numberPath = keyPath.as(Number.class);

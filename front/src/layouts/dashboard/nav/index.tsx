@@ -82,8 +82,8 @@ export default function Nav({ openNav, onCloseNav }: any) {
     <Box
       component="nav"
       sx={{
-        flexShrink: { lg: 0 },
-        width: { lg: NAV_WIDTH },
+        flexShrink: { md: 0 },
+        width: { md: NAV_WIDTH },
       }}
     >
       {isDesktop ? (
