@@ -21,13 +21,13 @@ public class LaptopPartController {
     private final ILaptopPartService laptopPartService;
 
     @PostMapping
-    //@PreAuthorize("hasRole('Admin')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ActionSuccessful> addLaptopPart(@RequestBody LaptopPartDto laptopPartDto){
         return ResponseEntity.ok(laptopPartService.create(laptopPartDto));
     }
 
     @PutMapping("/{id}")
-    //@PreAuthorize("hasRole('Admin')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ActionSuccessful> updateLaptopPart(@PathVariable(name="id") Long id,@RequestBody LaptopPartDto laptopPartDto){
         return ResponseEntity.ok(laptopPartService.update(id,laptopPartDto));
     }
@@ -43,19 +43,19 @@ public class LaptopPartController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('Admin')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ActionSuccessful> deleteLaptopPart(@PathVariable(name="id") Long id){
         return ResponseEntity.ok(laptopPartService.delete(id));
     }
 
     @PutMapping("/{id}/update-stock")
-    @PreAuthorize("hasRole('Admin')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ActionSuccessful> updateStock(@PathVariable(name="id") Long id, @RequestBody StockDto stockDto){
         return ResponseEntity.ok(laptopPartService.addStock(id,stockDto));
     }
 
     @PostMapping("/get-all")
-    //@PreAuthorize("hasRole('Admin')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PaginationResponse<LaptopPartDto>> getAllWithPagination(@RequestBody PaginationRequest paginationRequest){
         return ResponseEntity.ok(laptopPartService.getAllWithPagination(paginationRequest));
     }

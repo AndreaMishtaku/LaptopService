@@ -31,7 +31,7 @@ public class JwtTokenProvider {
                 .claim("first_name",userDetails.getFirstName())
                 .claim("last_name",userDetails.getLastName())
                 .claim("email",userDetails.getEmail())
-                .claim("role",userDetails.getRole().getName())
+                .claim("role",userDetails.getRole().getName().substring("ROLE_".length()))
                 .setIssuedAt(currentDate)
                 .setExpiration(expiredDate)
                 .signWith(SignatureAlgorithm.HS256, this.jwtSecret)

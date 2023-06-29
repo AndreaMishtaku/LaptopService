@@ -22,13 +22,13 @@ public class TicketController {
 
 
     @PostMapping
-    //@PreAuthorize("hasRole('Client')")
+    @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<ActionSuccessful> createTicket(@RequestBody TicketRequestDto ticketRequestDto){
         return ResponseEntity.ok(ticketService.create(ticketRequestDto));
     }
 
     @PutMapping("/{id}/update-status")
-    //@PreAuthorize("hasRole('Admin')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ActionSuccessful> updateTicketStatus(@PathVariable(name="id") Long id){
         return ResponseEntity.ok(ticketService.updateStatus(id));
     }
@@ -44,6 +44,7 @@ public class TicketController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ActionSuccessful> deleteTicket(@PathVariable(name="id") Long id){
         return ResponseEntity.ok(ticketService.delete(id));
     }

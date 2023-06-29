@@ -3,8 +3,8 @@ package com.project.laptopservice.model.enums;
 
 
 public enum Role {
-    ADMIN("Admin"),
-    CLIENT("Client");
+    ADMIN("ROLE_ADMIN"),
+    CLIENT("ROLE_CLIENT");
 
     private final String name;
 
