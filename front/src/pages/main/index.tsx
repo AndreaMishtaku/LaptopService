@@ -6,7 +6,6 @@ import {
   Typography,
   Box,
   Card,
-  CardMedia,
   CardContent,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -21,7 +20,6 @@ function Copyright() {
   );
 }
 
-const image = require("../../assets/images/laconix.jpg");
 const MainPage = () => {
   const navigate = useNavigate();
   return (
@@ -98,19 +96,11 @@ const MainPage = () => {
                 flexDirection: "column",
               }}
             >
-              <CardMedia
-                component="div"
-                sx={{
-                  // 16:9
-                  pt: "56.25%",
-                }}
-                image={image}
-              />
               <CardContent sx={{ flexGrow: 1 }}>
                 <Typography gutterBottom variant="h5" component="h2">
-                  Laconix
+                  Andrea Project
                 </Typography>
-                <Typography>Laconix Project for laptop service</Typography>
+                <Typography>Laptop Service created by me</Typography>
               </CardContent>
             </Card>
           </Box>
